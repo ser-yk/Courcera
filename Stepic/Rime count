@@ -1,0 +1,59 @@
+kod = [['I', 1],
+       ['V', 5],
+       ['X', 10],
+       ['L', 50],
+       ['C', 100],
+       ['D', 500],
+       ['M', 1000]]
+
+# Функция принимает результаты другой функции в верхнем регистре и без пробелов
+# и преобразует символы из строки в список
+def make_list():
+    new_list = tuple(less_gap())
+    solve = []
+    for num in new_list:
+       for char in kod:
+            if num == char[0]:
+                solve.append(char[1])
+                continue
+
+            else:
+                continue
+    print(lenght_and_decision(solve, new_list))
+
+def lenght_and_decision(R,A):
+    if len(R) != len(A):
+        print('Wrong! The number is not Roman!!!')
+
+    else:
+        i = 0
+        count = 0
+        while i != len(R):
+
+            if i + 1 == len(R): # тормозим процесс, когда индекс подошёл к максимуму
+                count += R[i]
+                break
+
+            elif R[i] >= R[i + 1]: # если текущие число больше или равно чем следующие - складываем в копилку
+                count += R[i]
+                i += 1
+
+            else:  # если текущее число меньше следующего, то вычитаем его
+                count -= R[i]
+                i += 1
+
+    print('It equal: ', count)
+
+
+
+def less_gap():
+    string = str(input().upper().replace(" ",""))
+    print('Your Roman numreb:', string)
+    return string
+
+
+make_list()
+
+
+
+
