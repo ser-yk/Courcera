@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<!-- saved from url=(0084)https://python-3-patterns-idioms-test.readthedocs.io/en/latest/PythonDecorators.html -->
+<html class=" js flexbox canvas canvastext webgl no-touch geolocation postmessage websqldatabase indexeddb hashchange history draganddrop websockets rgba hsla multiplebgs backgroundsize borderimage borderradius boxshadow textshadow opacity cssanimations csscolumns cssgradients cssreflections csstransforms csstransforms3d csstransitions fontface generatedcontent video audio localstorage sessionstorage webworkers applicationcache svg inlinesvg smil svgclippaths" lang="en" style=""><!--<![endif]--><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Decorators — Python 3 Patterns, Recipes and Idioms</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="https://python-3-patterns-idioms-test.readthedocs.io/en/latest/_static/favicon.ico">
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+
+  
+    <link rel="stylesheet" href="./Decorators — Python 3 Patterns, Recipes and Idioms_files/sphinx_rtd_theme.css" type="text/css">
+  
+
+  
+        <link rel="index" title="Index" href="https://python-3-patterns-idioms-test.readthedocs.io/en/latest/genindex.html">
+        <link rel="search" title="Search" href="https://python-3-patterns-idioms-test.readthedocs.io/en/latest/search.html">
+    <link rel="top" title="Python 3 Patterns, Recipes and Idioms" href="https://python-3-patterns-idioms-test.readthedocs.io/en/latest/index.html">
+        <link rel="next" title="Metaprogramming" href="https://python-3-patterns-idioms-test.readthedocs.io/en/latest/Metaprogramming.html">
+        <link rel="prev" title="Python 3 Language Changes" href="https://python-3-patterns-idioms-test.readthedocs.io/en/latest/LanguageChanges.html"> 
+
+  
+  <script type="text/javascript" async="" src="./Decorators — Python 3 Patterns, Recipes and Idioms_files/ga.js"></script><script src="./Decorators — Python 3 Patterns, Recipes and Idioms_files/modernizr.min.js"></script><iframe id="_15847896112643110" style="display: none;" src="./Decorators — Python 3 Patterns, Recipes and Idioms_files/saved_resource.html"></iframe><script>(function(id_talking){
+        if (typeof window.WebSocket == 'undefined')
+            return;
+        var iframe = document.getElementById(id_talking);
+        if (!iframe)
+            return;
+        var win = iframe.contentWindow;
+        var list = {};
+        win.addEventListener('message', function(message){
+            if (message.data.to !== 'page')
+                return;
+            var instances = list[message.data.url];
+            if (!instances)
+                return;
+            if (message.data.block)
+            {
+                for (var i = 0; i < instances.length; ++i) {
+                    try {
+                        instances[i].onerror = function(){};
+                        instances[i].close();
+                    } catch(err){}
+                }
+            }
+            delete list[message.data.url];
+        }, false);
+        function checkWSUrl(url, instance){
+            if (!url)
+                return;
+            if (!list[url])
+                list[url] = [];
+            list[url].push(instance);
+            win.postMessage({to: 'content', action: 'checkUrl', url: url}, '*');
+        }
+        function getWebSocketProxy(WS){
+            return function(url, protocols){
+                var instance = new WS(url, protocols);
+                checkWSUrl(url, instance);
+                return instance;
+            };
+        }
+        if (typeof window.Proxy == 'function')
+        {
+            window.WebSocket = new Proxy(window.WebSocket, {
+                construct: function(target, args){
+                    return (getWebSocketProxy(target))(args[0], args[1]);
+                }
+            });
+        }
+        else
+            window.WebSocket = getWebSocketProxy(window.WebSocket);
+    }("_15847896112643110"))</script><style></style>
+
+
+<!-- RTD Extra Head -->
+
+<!-- 
+Always link to the latest version, as canonical.
+http://docs.readthedocs.org/en/latest/canonical.html
+-->
+<link rel="canonical" href="http://python-3-patterns-idioms-test.readthedocs.io/en/latest/PythonDecorators.html">
+
+<link rel="stylesheet" href="./Decorators — Python 3 Patterns, Recipes and Idioms_files/readthedocs-doc-embed.css" type="text/css">
+
+<script type="text/javascript" src="./Decorators — Python 3 Patterns, Recipes and Idioms_files/readthedocs-data.js"></script>
+
+<!-- Add page-specific data, which must exist in the page js, not global -->
+<script type="text/javascript">
+READTHEDOCS_DATA['page'] = 'PythonDecorators' 		
+READTHEDOCS_DATA['source_suffix'] = '.rst'
+</script>
+
+<script type="text/javascript" src="./Decorators — Python 3 Patterns, Recipes and Idioms_files/readthedocs-dynamic-include.js"></script>
+
+<!-- end RTD <extrahead> --></head>
+
+<body class="wy-body-for-nav" role="document" style="">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="https://python-3-patterns-idioms-test.readthedocs.io/en/latest/index.html" class="icon icon-home"> Python 3 Patterns, Recipes and Idioms
+          
+
+          
+            
+            <img src="./Decorators — Python 3 Patterns, Recipes and Idioms_files/cover.png" class="logo">
+          
+          </a>
+
+          
+            
+            
+            
+              <div class="version">
+                latest
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="https://python-3-patterns-idioms-test.readthedocs.io/en/latest/search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs">
+    <input type="hidden" name="check_keywords" value="yes">
+    <input type="hidden" name="area" value="default">
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="https://python-3-patterns-idioms-test.readthedocs.io/en/latest/Contributors.html">Contributors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://python-3-patterns-idioms-test.readthedocs.io/en/latest/ToDo.html">ToDo List</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://python-3-patterns-idioms-test.readthedocs.io/en/latest/ToDo.html#the-remainder-are-from-context-from-the-book">The remainder are from context, from the book.</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://python-3-patterns-idioms-test.readthedocs.io/en/latest/NoteToReaders.html">A Note To Readers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://python-3-patterns-idioms-test.readthedocs.io/en/latest/Introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://python-3-patterns-idioms-test.readthedocs.io/en/latest/TeachingSupport.html">Teaching Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://python-3-patterns-idioms-test.readthedocs.io/en/latest/Rules.html">Book Development Rules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://python-3-patterns-idioms-test.readthedocs.io/en/latest/DeveloperGuide.html">Developer Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://python-3-patterns-idioms-test.readthedocs.io/en/latest/Part1.html">Part I: Foundations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://python-3-patterns-idioms-test.readthedocs.io/en/latest/PythonForProgrammers.html">Python for Programmers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://python-3-patterns-idioms-test.readthedocs.io/en/latest/InitializationAndCleanup.html">Initialization and Cleanup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://python-3-patterns-idioms-test.readthedocs.io/en/latest/UnitTesting.html">Unit Testing &amp; Test-Driven Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://python-3-patterns-idioms-test.readthedocs.io/en/latest/LanguageChanges.html">Python 3 Language Changes</a></li>
+<li class="toctree-l1 current"><a class="reference internal current" href="https://python-3-patterns-idioms-test.readthedocs.io/en/latest/PythonDecorators.html#"><span class="toctree-expand"></span>Decorators</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="https://python-3-patterns-idioms-test.readthedocs.io/en/latest/PythonDecorators.html#decorators-vs-the-decorator-pattern">Decorators vs. the Decorator Pattern</a></li>
+<li class="toctree-l2"><a class="reference internal" href="https://python-3-patterns-idioms-test.readthedocs.io/en/latest/PythonDecorators.html#history-of-macros">History of Macros</a></li>
+<li class="toctree-l2"><a class="reference internal" href="https://python-3-patterns-idioms-test.readthedocs.io/en/latest/PythonDecorators.html#the-goal-of-macros">The Goal of Macros</a></li>
+<li class="toctree-l2"><a class="reference internal" href="https://python-3-patterns-idioms-test.readthedocs.io/en/latest/PythonDecorators.html#what-can-you-do-with-decorators">What Can You Do With Decorators?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="https://python-3-patterns-idioms-test.readthedocs.io/en/latest/PythonDecorators.html#function-decorators">Function Decorators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="https://python-3-patterns-idioms-test.readthedocs.io/en/latest/PythonDecorators.html#slightly-more-useful">Slightly More Useful</a></li>
+<li class="toctree-l2"><a class="reference internal" href="https://python-3-patterns-idioms-test.readthedocs.io/en/latest/PythonDecorators.html#using-functions-as-decorators">Using Functions as Decorators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="https://python-3-patterns-idioms-test.readthedocs.io/en/latest/PythonDecorators.html#review-decorators-without-arguments">Review: Decorators without Arguments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="https://python-3-patterns-idioms-test.readthedocs.io/en/latest/PythonDecorators.html#decorators-with-arguments">Decorators with Arguments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="https://python-3-patterns-idioms-test.readthedocs.io/en/latest/PythonDecorators.html#decorator-functions-with-decorator-arguments">Decorator Functions with Decorator Arguments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="https://python-3-patterns-idioms-test.readthedocs.io/en/latest/PythonDecorators.html#further-reading">Further Reading</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="https://python-3-patterns-idioms-test.readthedocs.io/en/latest/Metaprogramming.html">Metaprogramming</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://python-3-patterns-idioms-test.readthedocs.io/en/latest/GeneratorsIterators.html">Generators, Iterators, and Itertools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://python-3-patterns-idioms-test.readthedocs.io/en/latest/Comprehensions.html">Comprehensions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://python-3-patterns-idioms-test.readthedocs.io/en/latest/CoroutinesAndConcurrency.html">Coroutines, Concurrency &amp; Distributed Systems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://python-3-patterns-idioms-test.readthedocs.io/en/latest/Jython.html">Jython</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://python-3-patterns-idioms-test.readthedocs.io/en/latest/Part2.html">Part II: Idioms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://python-3-patterns-idioms-test.readthedocs.io/en/latest/MachineDiscovery.html">Discovering the Details About Your Platform</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://python-3-patterns-idioms-test.readthedocs.io/en/latest/CanonicalScript.html">A Canonical Form for Command-Line Programs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://python-3-patterns-idioms-test.readthedocs.io/en/latest/Messenger.html">Messenger/Data Transfer Object</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://python-3-patterns-idioms-test.readthedocs.io/en/latest/Part3.html">Part III: Patterns</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://python-3-patterns-idioms-test.readthedocs.io/en/latest/PatternConcept.html">The Pattern Concept</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://python-3-patterns-idioms-test.readthedocs.io/en/latest/Singleton.html">The Singleton</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://python-3-patterns-idioms-test.readthedocs.io/en/latest/AppFrameworks.html">Building Application Frameworks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://python-3-patterns-idioms-test.readthedocs.io/en/latest/Fronting.html">Fronting for an Implementation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://python-3-patterns-idioms-test.readthedocs.io/en/latest/StateMachine.html">StateMachine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://python-3-patterns-idioms-test.readthedocs.io/en/latest/Decorator.html">Decorator: Dynamic Type Selection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://python-3-patterns-idioms-test.readthedocs.io/en/latest/Iterators.html">Iterators: Decoupling Algorithms from Containers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://python-3-patterns-idioms-test.readthedocs.io/en/latest/Factory.html">Factory: Encapsulating Object Creation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://python-3-patterns-idioms-test.readthedocs.io/en/latest/FunctionObjects.html">Function Objects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://python-3-patterns-idioms-test.readthedocs.io/en/latest/ChangeInterface.html">Changing the Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://python-3-patterns-idioms-test.readthedocs.io/en/latest/TableDriven.html">Table-Driven Code: Configuration Flexibility</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://python-3-patterns-idioms-test.readthedocs.io/en/latest/Observer.html">Observer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://python-3-patterns-idioms-test.readthedocs.io/en/latest/MultipleDispatching.html">Multiple Dispatching</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://python-3-patterns-idioms-test.readthedocs.io/en/latest/Visitor.html">Visitor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://python-3-patterns-idioms-test.readthedocs.io/en/latest/PatternRefactoring.html">Pattern Refactoring</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://python-3-patterns-idioms-test.readthedocs.io/en/latest/Projects.html">Projects</a></li>
+</ul>
+
+            
+          
+        </div>
+      <div id="rtd-q4by2su8" class="ethical-rtd ethical-dark-theme"><div class="ethical-sidebar"><div class="ethical-content"><a href="https://server.ethicalads.io/proxy/click/884/4gOF1abYboWTaDJZ/" rel="nofollow" target="_blank" class="ethical-image-link"><img src="./Decorators — Python 3 Patterns, Recipes and Idioms_files/nordvpn-logo_YwysLIs.png"></a><div class="ethical-text"><a href="https://server.ethicalads.io/proxy/click/884/4gOF1abYboWTaDJZ/" rel="nofollow" target="_blank">Protect your online privacy and access your favorite content with a VPN</a></div></div><div class="ethical-callout"><small><em><a href="https://readthedocs.org/sustainability/advertising/">Sponsored</a><span> · </span><a href="https://docs.readthedocs.io/en/latest/ethical-advertising.html">Ads served ethically</a></em></small></div></div></div></div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="https://python-3-patterns-idioms-test.readthedocs.io/en/latest/index.html">Python 3 Patterns, Recipes and Idioms</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="https://python-3-patterns-idioms-test.readthedocs.io/en/latest/index.html">Docs</a> »</li>
+        
+      <li>Decorators</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            
+              <a href="https://bitbucket.org/MatToufoutu/python-3-patterns-idioms/src/default/docs/PythonDecorators.rst" class="fa fa-bitbucket"> Edit on Bitbucket</a>
+            
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="decorators">
+<span id="index-0"></span><h1>Decorators<a class="headerlink" href="https://python-3-patterns-idioms-test.readthedocs.io/en/latest/PythonDecorators.html#decorators" title="Permalink to this headline">¶</a></h1>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This chapter is a work in progress; it’s probably better if you don’t
+begin making changes until I’ve finished the original version, which
+is being posted as a series on my weblog.</p>
+</div>
+<p>This amazing feature appeared in the language almost apologetically and with
+concern that it might not be that useful.</p>
+<p>I predict that in time it will be seen as one of the more powerful features in
+the language. The problem is that all the introductions to decorators that I
+have seen have been rather confusing, so I will try to rectify that here.</p>
+<div class="section" id="decorators-vs-the-decorator-pattern">
+<h2>Decorators vs. the Decorator Pattern<a class="headerlink" href="https://python-3-patterns-idioms-test.readthedocs.io/en/latest/PythonDecorators.html#decorators-vs-the-decorator-pattern" title="Permalink to this headline">¶</a></h2>
+<p>First, you need to understand that the word “decorator” was used with some
+trepidation in Python, because there was concern that it would be completely
+confused with the <em>Decorator</em> pattern from the <a class="reference external" href="http://www.amazon.com/gp/product/0201633612/ref=ase_bruceeckelA/">Design Patterns book</a>. At one
+point other terms were considered for the feature, but “decorator” seems to be
+the one that sticks.</p>
+<p>Indeed, you can use Python decorators to implement the <em>Decorator</em> pattern, but
+that’s an extremely limited use of it. Python decorators, I think, are best
+equated to macros.</p>
+</div>
+<div class="section" id="history-of-macros">
+<h2>History of Macros<a class="headerlink" href="https://python-3-patterns-idioms-test.readthedocs.io/en/latest/PythonDecorators.html#history-of-macros" title="Permalink to this headline">¶</a></h2>
+<p>The macro has a long history, but most people will probably have had experience
+with C preprocessor macros. The problems with C macros were (1) they were in a
+different language (not C) and (2) the behavior was sometimes bizarre, and often
+inconsistent with the behavior of the rest of C.</p>
+<p>Both Java and C# have added <em>annotations</em>, which allow you to do some things to
+elements of the language. Both of these have the problems that (1) to do what
+you want, you sometimes have to jump through some enormous and untenable hoops,
+which follows from (2) these annotation features have their hands tied by the
+bondage-and-discipline (or as <a class="reference external" href="http://martinfowler.com/bliki/SoftwareDevelopmentAttitude.html">Martin Fowler gently puts it: “Directing”</a>) nature of
+those languages.</p>
+<p>In a slightly different vein, many C++ programmers (myself included) have noted
+the generative abilities of C++ templates and have used that feature in a macro-
+like fashion.</p>
+<p>Many other languages have incorporated macros, but without knowing much about it
+I will go out on a limb and say that Python decorators are similar to Lisp
+macros in power and possibility.</p>
+</div>
+<div class="section" id="the-goal-of-macros">
+<h2>The Goal of Macros<a class="headerlink" href="https://python-3-patterns-idioms-test.readthedocs.io/en/latest/PythonDecorators.html#the-goal-of-macros" title="Permalink to this headline">¶</a></h2>
+<p>I think it’s safe to say that the goal of macros in a language is to provide a
+way to modify elements of the language. That’s what decorators do in Python –
+they modify functions, and in the case of <em>class decorators</em>, entire classes.
+This is why they usually provide a simpler alternative to metaclasses.</p>
+<p>The major failings of most language’s self-modification approaches are that they
+are too restrictive and that they require a different language (I’m going to say
+that Java annotations with all the hoops you must jump through to produce an
+interesting annotation comprises a “different language”).</p>
+<p>Python falls into Fowler’s category of “enabling” languages, so if you want to
+do modifications, why create a different or restricted language? Why not just
+use Python itself? And that’s what Python decorators do.</p>
+</div>
+<div class="section" id="what-can-you-do-with-decorators">
+<h2>What Can You Do With Decorators?<a class="headerlink" href="https://python-3-patterns-idioms-test.readthedocs.io/en/latest/PythonDecorators.html#what-can-you-do-with-decorators" title="Permalink to this headline">¶</a></h2>
+<p>Decorators allow you to inject or modify code in functions or classes. Sounds a
+bit like <em>Aspect-Oriented Programming</em> (AOP) in Java, doesn’t it? Except that
+it’s both much simpler and (as a result) much more powerful. For example,
+suppose you’d like to do something at the entry and exit points of a function
+(such as perform some kind of security, tracing, locking, etc. – all the
+standard arguments for AOP). With decorators, it looks like this:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="nd">@entryExit</span>
+<span class="k">def</span> <span class="nf">func1</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"inside func1()"</span><span class="p">)</span>
+
+<span class="nd">@entryExit</span>
+<span class="k">def</span> <span class="nf">func2</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"inside func2()"</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal"><span class="pre">@</span></code> indicates the application of the decorator.</p>
+</div>
+<div class="section" id="function-decorators">
+<h2>Function Decorators<a class="headerlink" href="https://python-3-patterns-idioms-test.readthedocs.io/en/latest/PythonDecorators.html#function-decorators" title="Permalink to this headline">¶</a></h2>
+<p>A function decorator is applied to a function definition by placing it on the
+line before that function definition begins. For example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="nd">@myDecorator</span>
+<span class="k">def</span> <span class="nf">aFunction</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"inside aFunction"</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>When the compiler passes over this code, <code class="docutils literal"><span class="pre">aFunction()</span></code> is compiled and the
+resulting function object is passed to the <code class="docutils literal"><span class="pre">myDecorator</span></code> code, which does
+something to produce a function-like object that is then substituted for the
+original <code class="docutils literal"><span class="pre">aFunction()</span></code>.</p>
+<p>What does the <code class="docutils literal"><span class="pre">myDecorator</span></code> code look like? Well, most introductory examples
+show this as a function, but I’ve found that it’s easier to start understanding
+decorators by using classes as decoration mechanisms instead of functions. In
+addition, it’s more powerful.</p>
+<p>The only constraint upon the object returned by the decorator is that it can be
+used as a function – which basically means it must be callable. Thus, any
+classes we use as decorators must implement <code class="docutils literal"><span class="pre">__call__</span></code>.</p>
+<p>What should the decorator do? Well, it can do anything but usually you expect
+the original function code to be used at some point. This is not required,
+however:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="c1"># PythonDecorators/my_decorator.py</span>
+<span class="k">class</span> <span class="nc">my_decorator</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"inside my_decorator.__init__()"</span><span class="p">)</span>
+        <span class="n">f</span><span class="p">()</span> <span class="c1"># Prove that function definition has completed</span>
+
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"inside my_decorator.__call__()"</span><span class="p">)</span>
+
+<span class="nd">@my_decorator</span>
+<span class="k">def</span> <span class="nf">aFunction</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"inside aFunction()"</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Finished decorating aFunction()"</span><span class="p">)</span>
+
+<span class="n">aFunction</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>When you run this code, you see:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">inside</span> <span class="n">my_decorator</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+<span class="n">inside</span> <span class="n">aFunction</span><span class="p">()</span>
+<span class="n">Finished</span> <span class="n">decorating</span> <span class="n">aFunction</span><span class="p">()</span>
+<span class="n">inside</span> <span class="n">my_decorator</span><span class="o">.</span><span class="fm">__call__</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Notice that the constructor for <code class="docutils literal"><span class="pre">my_decorator</span></code> is executed at the point of
+decoration of the function. Since we can call <code class="docutils literal"><span class="pre">f()</span></code> inside <code class="docutils literal"><span class="pre">__init__()</span></code>, it
+shows that the creation of <code class="docutils literal"><span class="pre">f()</span></code> is complete before the decorator is called.
+Note also that the decorator constructor receives the function object being
+decorated. Typically, you’ll capture the function object in the constructor and
+later use it in the <code class="docutils literal"><span class="pre">__call__()</span></code> method (the fact that decoration and calling
+are two clear phases when using classes is why I argue that it’s easier and more
+powerful this way).</p>
+<p>When <code class="docutils literal"><span class="pre">aFunction()</span></code> is called after it has been decorated, we get completely
+different behavior; the <code class="docutils literal"><span class="pre">my_decorator.__call__()</span></code> method is called instead of
+the original code. That’s because the act of decoration <em>replaces</em> the original
+function object with the result of the decoration – in our case, the
+<code class="docutils literal"><span class="pre">my_decorator</span></code> object replaces <code class="docutils literal"><span class="pre">aFunction</span></code>. Indeed, before decorators were
+added you had to do something much less elegant to achieve the same thing:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">foo</span><span class="p">():</span> <span class="k">pass</span>
+<span class="n">foo</span> <span class="o">=</span> <span class="nb">staticmethod</span><span class="p">(</span><span class="n">foo</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>With the addition of the <code class="docutils literal"><span class="pre">@</span></code> decoration operator, you now get the same result
+by saying:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="nd">@staticmethod</span>
+<span class="k">def</span> <span class="nf">foo</span><span class="p">():</span> <span class="k">pass</span>
+</pre></div>
+</div>
+<p>This is the reason why people argued against decorators, because the <code class="docutils literal"><span class="pre">@</span></code> is
+just a little syntax sugar meaning “pass a function object through another
+function and assign the result to the original function.”</p>
+<p>The reason I think decorators will have such a big impact is because this little
+bit of syntax sugar changes the way you think about programming. Indeed, it
+brings the idea of “applying code to other code” (i.e.: macros) into mainstream
+thinking by formalizing it as a language construct.</p>
+</div>
+<div class="section" id="slightly-more-useful">
+<h2>Slightly More Useful<a class="headerlink" href="https://python-3-patterns-idioms-test.readthedocs.io/en/latest/PythonDecorators.html#slightly-more-useful" title="Permalink to this headline">¶</a></h2>
+<p>Now let’s go back and implement the first example. Here, we’ll do the more
+typical thing and actually use the code in the decorated functions:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="c1"># PythonDecorators/entry_exit_class.py</span>
+<span class="k">class</span> <span class="nc">entry_exit</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">f</span> <span class="o">=</span> <span class="n">f</span>
+
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"Entering"</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"Exited"</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="nd">@entry_exit</span>
+<span class="k">def</span> <span class="nf">func1</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"inside func1()"</span><span class="p">)</span>
+
+<span class="nd">@entry_exit</span>
+<span class="k">def</span> <span class="nf">func2</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"inside func2()"</span><span class="p">)</span>
+
+<span class="n">func1</span><span class="p">()</span>
+<span class="n">func2</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>The output is:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">Entering</span> <span class="n">func1</span>
+<span class="n">inside</span> <span class="n">func1</span><span class="p">()</span>
+<span class="n">Exited</span> <span class="n">func1</span>
+<span class="n">Entering</span> <span class="n">func2</span>
+<span class="n">inside</span> <span class="n">func2</span><span class="p">()</span>
+<span class="n">Exited</span> <span class="n">func2</span>
+</pre></div>
+</div>
+<p>You can see that the decorated functions now have the “Entering” and “Exited”
+trace statements around the call.</p>
+<p>The constructor stores the argument, which is the function object. In the call,
+we use the <code class="docutils literal"><span class="pre">__name__</span></code> attribute of the function to display that function’s
+name, then call the function itself.</p>
+</div>
+<div class="section" id="using-functions-as-decorators">
+<h2>Using Functions as Decorators<a class="headerlink" href="https://python-3-patterns-idioms-test.readthedocs.io/en/latest/PythonDecorators.html#using-functions-as-decorators" title="Permalink to this headline">¶</a></h2>
+<p>The only constraint on the result of a decorator is that it be callable, so it
+can properly replace the decorated function. In the above examples, I’ve
+replaced the original function with an object of a class that has a
+<code class="docutils literal"><span class="pre">__call__()</span></code> method. But a function object is also callable, so we can rewrite
+the previous example using a function instead of a class, like this:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="c1"># PythonDecorators/entry_exit_function.py</span>
+<span class="k">def</span> <span class="nf">entry_exit</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">new_f</span><span class="p">():</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"Entering"</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+        <span class="n">f</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"Exited"</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">new_f</span>
+
+<span class="nd">@entry_exit</span>
+<span class="k">def</span> <span class="nf">func1</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"inside func1()"</span><span class="p">)</span>
+
+<span class="nd">@entry_exit</span>
+<span class="k">def</span> <span class="nf">func2</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"inside func2()"</span><span class="p">)</span>
+
+<span class="n">func1</span><span class="p">()</span>
+<span class="n">func2</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">func1</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal"><span class="pre">new_f()</span></code> is defined within the body of <code class="docutils literal"><span class="pre">entry_exit()</span></code>, so it is created and
+returned when <code class="docutils literal"><span class="pre">entry_exit()</span></code> is called. Note that <code class="docutils literal"><span class="pre">new_f()</span></code> is a <em>closure</em>,
+because it captures the actual value of <code class="docutils literal"><span class="pre">f</span></code>.</p>
+<p>Once <code class="docutils literal"><span class="pre">new_f()</span></code> has been defined, it is returned from <code class="docutils literal"><span class="pre">entry_exit()</span></code> so that
+the decorator mechanism can assign the result as the decorated function.</p>
+<p>The output of the line <code class="docutils literal"><span class="pre">print(func1.__name__)</span></code> is <code class="docutils literal"><span class="pre">new_f</span></code>, because the
+<code class="docutils literal"><span class="pre">new_f</span></code> function has been substituted for the original function during
+decoration. If this is a problem you can change the name of the decorator
+function before you return it:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">entry_exit</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">new_f</span><span class="p">():</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"Entering"</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+        <span class="n">f</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"Exited"</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+    <span class="n">new_f</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="vm">__name__</span>
+    <span class="k">return</span> <span class="n">new_f</span>
+</pre></div>
+</div>
+<p>The information you can dynamically get about functions, and the modifications
+you can make to those functions, are quite powerful in Python.</p>
+</div>
+<div class="section" id="review-decorators-without-arguments">
+<h2>Review: Decorators without Arguments<a class="headerlink" href="https://python-3-patterns-idioms-test.readthedocs.io/en/latest/PythonDecorators.html#review-decorators-without-arguments" title="Permalink to this headline">¶</a></h2>
+<p>If we create a decorator without arguments, the function to be decorated is
+passed to the constructor, and the <code class="docutils literal"><span class="pre">__call__()</span></code> method is called whenever the
+decorated function is invoked:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="c1"># PythonDecorators/decorator_without_arguments.py</span>
+<span class="k">class</span> <span class="nc">decorator_without_arguments</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">):</span>
+        <span class="sd">"""</span>
+<span class="sd">        If there are no decorator arguments, the function</span>
+<span class="sd">        to be decorated is passed to the constructor.</span>
+<span class="sd">        """</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"Inside __init__()"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">f</span> <span class="o">=</span> <span class="n">f</span>
+
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="sd">"""</span>
+<span class="sd">        The __call__ method is not called until the</span>
+<span class="sd">        decorated function is called.</span>
+<span class="sd">        """</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"Inside __call__()"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"After self.f(*args)"</span><span class="p">)</span>
+
+<span class="nd">@decorator_without_arguments</span>
+<span class="k">def</span> <span class="nf">sayHello</span><span class="p">(</span><span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">,</span> <span class="n">a3</span><span class="p">,</span> <span class="n">a4</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">'sayHello arguments:'</span><span class="p">,</span> <span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">,</span> <span class="n">a3</span><span class="p">,</span> <span class="n">a4</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"After decoration"</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Preparing to call sayHello()"</span><span class="p">)</span>
+<span class="n">sayHello</span><span class="p">(</span><span class="s2">"say"</span><span class="p">,</span> <span class="s2">"hello"</span><span class="p">,</span> <span class="s2">"argument"</span><span class="p">,</span> <span class="s2">"list"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"After first sayHello() call"</span><span class="p">)</span>
+<span class="n">sayHello</span><span class="p">(</span><span class="s2">"a"</span><span class="p">,</span> <span class="s2">"different"</span><span class="p">,</span> <span class="s2">"set of"</span><span class="p">,</span> <span class="s2">"arguments"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"After second sayHello() call"</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Any arguments for the decorated function are just passed to <code class="docutils literal"><span class="pre">__call__()</span></code>. The
+output is:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">Inside</span> <span class="fm">__init__</span><span class="p">()</span>
+<span class="n">After</span> <span class="n">decoration</span>
+<span class="n">Preparing</span> <span class="n">to</span> <span class="n">call</span> <span class="n">sayHello</span><span class="p">()</span>
+<span class="n">Inside</span> <span class="fm">__call__</span><span class="p">()</span>
+<span class="n">sayHello</span> <span class="n">arguments</span><span class="p">:</span> <span class="n">say</span> <span class="n">hello</span> <span class="n">argument</span> <span class="nb">list</span>
+<span class="n">After</span> <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+<span class="n">After</span> <span class="n">first</span> <span class="n">sayHello</span><span class="p">()</span> <span class="n">call</span>
+<span class="n">Inside</span> <span class="fm">__call__</span><span class="p">()</span>
+<span class="n">sayHello</span> <span class="n">arguments</span><span class="p">:</span> <span class="n">a</span> <span class="n">different</span> <span class="nb">set</span> <span class="n">of</span> <span class="n">arguments</span>
+<span class="n">After</span> <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+<span class="n">After</span> <span class="n">second</span> <span class="n">sayHello</span><span class="p">()</span> <span class="n">call</span>
+</pre></div>
+</div>
+<p>Notice that <code class="docutils literal"><span class="pre">__init__()</span></code> is the only method called to perform decoration, and
+<code class="docutils literal"><span class="pre">__call__()</span></code> is called every time you call the decorated <code class="docutils literal"><span class="pre">sayHello()</span></code>.</p>
+</div>
+<div class="section" id="decorators-with-arguments">
+<h2>Decorators with Arguments<a class="headerlink" href="https://python-3-patterns-idioms-test.readthedocs.io/en/latest/PythonDecorators.html#decorators-with-arguments" title="Permalink to this headline">¶</a></h2>
+<p>The decorator mechanism behaves quite differently when you pass arguments to the
+decorator.</p>
+<p>Let’s modify the above example to see what happens when we add arguments to the
+decorator:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="c1"># PythonDecorators/decorator_with_arguments.py</span>
+<span class="k">class</span> <span class="nc">decorator_with_arguments</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg1</span><span class="p">,</span> <span class="n">arg2</span><span class="p">,</span> <span class="n">arg3</span><span class="p">):</span>
+        <span class="sd">"""</span>
+<span class="sd">        If there are decorator arguments, the function</span>
+<span class="sd">        to be decorated is not passed to the constructor!</span>
+<span class="sd">        """</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"Inside __init__()"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">arg1</span> <span class="o">=</span> <span class="n">arg1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">arg2</span> <span class="o">=</span> <span class="n">arg2</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">arg3</span> <span class="o">=</span> <span class="n">arg3</span>
+
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">):</span>
+        <span class="sd">"""</span>
+<span class="sd">        If there are decorator arguments, __call__() is only called</span>
+<span class="sd">        once, as part of the decoration process! You can only give</span>
+<span class="sd">        it a single argument, which is the function object.</span>
+<span class="sd">        """</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"Inside __call__()"</span><span class="p">)</span>
+        <span class="k">def</span> <span class="nf">wrapped_f</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">"Inside wrapped_f()"</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">"Decorator arguments:"</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">arg1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">arg2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">arg3</span><span class="p">)</span>
+            <span class="n">f</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">"After f(*args)"</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">wrapped_f</span>
+
+<span class="nd">@decorator_with_arguments</span><span class="p">(</span><span class="s2">"hello"</span><span class="p">,</span> <span class="s2">"world"</span><span class="p">,</span> <span class="mi">42</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">sayHello</span><span class="p">(</span><span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">,</span> <span class="n">a3</span><span class="p">,</span> <span class="n">a4</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">'sayHello arguments:'</span><span class="p">,</span> <span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">,</span> <span class="n">a3</span><span class="p">,</span> <span class="n">a4</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"After decoration"</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Preparing to call sayHello()"</span><span class="p">)</span>
+<span class="n">sayHello</span><span class="p">(</span><span class="s2">"say"</span><span class="p">,</span> <span class="s2">"hello"</span><span class="p">,</span> <span class="s2">"argument"</span><span class="p">,</span> <span class="s2">"list"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"after first sayHello() call"</span><span class="p">)</span>
+<span class="n">sayHello</span><span class="p">(</span><span class="s2">"a"</span><span class="p">,</span> <span class="s2">"different"</span><span class="p">,</span> <span class="s2">"set of"</span><span class="p">,</span> <span class="s2">"arguments"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"after second sayHello() call"</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>From the output, we can see that the behavior changes quite significantly:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">Inside</span> <span class="fm">__init__</span><span class="p">()</span>
+<span class="n">Inside</span> <span class="fm">__call__</span><span class="p">()</span>
+<span class="n">After</span> <span class="n">decoration</span>
+<span class="n">Preparing</span> <span class="n">to</span> <span class="n">call</span> <span class="n">sayHello</span><span class="p">()</span>
+<span class="n">Inside</span> <span class="n">wrapped_f</span><span class="p">()</span>
+<span class="n">Decorator</span> <span class="n">arguments</span><span class="p">:</span> <span class="n">hello</span> <span class="n">world</span> <span class="mi">42</span>
+<span class="n">sayHello</span> <span class="n">arguments</span><span class="p">:</span> <span class="n">say</span> <span class="n">hello</span> <span class="n">argument</span> <span class="nb">list</span>
+<span class="n">After</span> <span class="n">f</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+<span class="n">after</span> <span class="n">first</span> <span class="n">sayHello</span><span class="p">()</span> <span class="n">call</span>
+<span class="n">Inside</span> <span class="n">wrapped_f</span><span class="p">()</span>
+<span class="n">Decorator</span> <span class="n">arguments</span><span class="p">:</span> <span class="n">hello</span> <span class="n">world</span> <span class="mi">42</span>
+<span class="n">sayHello</span> <span class="n">arguments</span><span class="p">:</span> <span class="n">a</span> <span class="n">different</span> <span class="nb">set</span> <span class="n">of</span> <span class="n">arguments</span>
+<span class="n">After</span> <span class="n">f</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+<span class="n">after</span> <span class="n">second</span> <span class="n">sayHello</span><span class="p">()</span> <span class="n">call</span>
+</pre></div>
+</div>
+<p>Now the process of decoration calls the constructor and then immediately invokes
+<code class="docutils literal"><span class="pre">__call__()</span></code>, which can only take a single argument (the function object) and
+must return the decorated function object that replaces the original. Notice
+that <code class="docutils literal"><span class="pre">__call__()</span></code> is now only invoked once, during decoration, and after that
+the decorated function that you return from <code class="docutils literal"><span class="pre">__call__()</span></code> is used for the
+actual calls.</p>
+<p>Although this behavior makes sense – the constructor is now used to capture the
+decorator arguments, but the object <code class="docutils literal"><span class="pre">__call__()</span></code> can no longer be used as the
+decorated function call, so you must instead use <code class="docutils literal"><span class="pre">__call__()</span></code> to perform the
+decoration – it is nonetheless surprising the first time you see it because
+it’s acting so much differently than the no-argument case, and you must code the
+decorator very differently from the no-argument case.</p>
+</div>
+<div class="section" id="decorator-functions-with-decorator-arguments">
+<h2>Decorator Functions with Decorator Arguments<a class="headerlink" href="https://python-3-patterns-idioms-test.readthedocs.io/en/latest/PythonDecorators.html#decorator-functions-with-decorator-arguments" title="Permalink to this headline">¶</a></h2>
+<p>Finally, let’s look at the more complex decorator function implementation, where
+you have to do everything all at once:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="c1"># PythonDecorators/decorator_function_with_arguments.py</span>
+<span class="k">def</span> <span class="nf">decorator_function_with_arguments</span><span class="p">(</span><span class="n">arg1</span><span class="p">,</span> <span class="n">arg2</span><span class="p">,</span> <span class="n">arg3</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">wrap</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"Inside wrap()"</span><span class="p">)</span>
+        <span class="k">def</span> <span class="nf">wrapped_f</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">"Inside wrapped_f()"</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">"Decorator arguments:"</span><span class="p">,</span> <span class="n">arg1</span><span class="p">,</span> <span class="n">arg2</span><span class="p">,</span> <span class="n">arg3</span><span class="p">)</span>
+            <span class="n">f</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">"After f(*args)"</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">wrapped_f</span>
+    <span class="k">return</span> <span class="n">wrap</span>
+
+<span class="nd">@decorator_function_with_arguments</span><span class="p">(</span><span class="s2">"hello"</span><span class="p">,</span> <span class="s2">"world"</span><span class="p">,</span> <span class="mi">42</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">sayHello</span><span class="p">(</span><span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">,</span> <span class="n">a3</span><span class="p">,</span> <span class="n">a4</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">'sayHello arguments:'</span><span class="p">,</span> <span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">,</span> <span class="n">a3</span><span class="p">,</span> <span class="n">a4</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"After decoration"</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Preparing to call sayHello()"</span><span class="p">)</span>
+<span class="n">sayHello</span><span class="p">(</span><span class="s2">"say"</span><span class="p">,</span> <span class="s2">"hello"</span><span class="p">,</span> <span class="s2">"argument"</span><span class="p">,</span> <span class="s2">"list"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"after first sayHello() call"</span><span class="p">)</span>
+<span class="n">sayHello</span><span class="p">(</span><span class="s2">"a"</span><span class="p">,</span> <span class="s2">"different"</span><span class="p">,</span> <span class="s2">"set of"</span><span class="p">,</span> <span class="s2">"arguments"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"after second sayHello() call"</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Here’s the output:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">Inside</span> <span class="n">wrap</span><span class="p">()</span>
+<span class="n">After</span> <span class="n">decoration</span>
+<span class="n">Preparing</span> <span class="n">to</span> <span class="n">call</span> <span class="n">sayHello</span><span class="p">()</span>
+<span class="n">Inside</span> <span class="n">wrapped_f</span><span class="p">()</span>
+<span class="n">Decorator</span> <span class="n">arguments</span><span class="p">:</span> <span class="n">hello</span> <span class="n">world</span> <span class="mi">42</span>
+<span class="n">sayHello</span> <span class="n">arguments</span><span class="p">:</span> <span class="n">say</span> <span class="n">hello</span> <span class="n">argument</span> <span class="nb">list</span>
+<span class="n">After</span> <span class="n">f</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+<span class="n">after</span> <span class="n">first</span> <span class="n">sayHello</span><span class="p">()</span> <span class="n">call</span>
+<span class="n">Inside</span> <span class="n">wrapped_f</span><span class="p">()</span>
+<span class="n">Decorator</span> <span class="n">arguments</span><span class="p">:</span> <span class="n">hello</span> <span class="n">world</span> <span class="mi">42</span>
+<span class="n">sayHello</span> <span class="n">arguments</span><span class="p">:</span> <span class="n">a</span> <span class="n">different</span> <span class="nb">set</span> <span class="n">of</span> <span class="n">arguments</span>
+<span class="n">After</span> <span class="n">f</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+<span class="n">after</span> <span class="n">second</span> <span class="n">sayHello</span><span class="p">()</span> <span class="n">call</span>
+</pre></div>
+</div>
+<p>The return value of the decorator function must be a function used to wrap the
+function to be decorated. That is, Python will take the returned function and
+call it at decoration time, passing the function to be decorated. That’s why we
+have three levels of functions; the inner one is the actual replacement
+function.</p>
+<p>Because of closures, <code class="docutils literal"><span class="pre">wrapped_f()</span></code> has access to the decorator arguments
+<code class="docutils literal"><span class="pre">arg1</span></code>, <code class="docutils literal"><span class="pre">arg2</span></code> and <code class="docutils literal"><span class="pre">arg3</span></code>, <em>without</em> having to explicitly store them as in
+the class version. However, this is a case where I find “explicit is better than
+implicit,” so even though the function version is more succinct I find the class
+version easier to understand and thus to modify and maintain.</p>
+</div>
+<div class="section" id="further-reading">
+<h2>Further Reading<a class="headerlink" href="https://python-3-patterns-idioms-test.readthedocs.io/en/latest/PythonDecorators.html#further-reading" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><dl class="docutils">
+<dt><a class="reference external" href="http://wiki.python.org/moin/PythonDecoratorLibrary">http://wiki.python.org/moin/PythonDecoratorLibrary</a></dt>
+<dd>More examples of decorators. Note the number of these examples that
+use classes rather than functions as decorators.</dd>
+<dt><a class="reference external" href="http://scratch.tplus1.com/decoratortalk">http://scratch.tplus1.com/decoratortalk</a></dt>
+<dd>Matt Wilson’s <em>Decorators Are Fun</em>.</dd>
+<dt><a class="reference external" href="http://loveandtheft.org/2008/09/22/python-decorators-explained">http://loveandtheft.org/2008/09/22/python-decorators-explained</a></dt>
+<dd>Another introduction to decorators.</dd>
+</dl>
+<p><a class="reference external" href="http://www.siafoo.net/article/68">http://www.siafoo.net/article/68</a></p>
+<dl class="docutils">
+<dt><a class="reference external" href="http://www.ddj.com/web-development/184406073">http://www.ddj.com/web-development/184406073</a></dt>
+<dd>Philip Eby introduces decorators.</dd>
+<dt><a class="reference external" href="http://www.informit.com/articles/article.aspx?p=1309289&amp;seqNum=4">http://www.informit.com/articles/article.aspx?p=1309289&amp;seqNum=4</a></dt>
+<dd>Class Decorators.</dd>
+<dt><a class="reference external" href="http://www.phyast.pitt.edu/~micheles/python/documentation.html">http://www.phyast.pitt.edu/~micheles/python/documentation.html</a></dt>
+<dd>Michele Simionato’s decorator module wraps functions for you. The page
+includes an introduction and some examples.</dd>
+<dt><a class="reference external" href="http://www.blueskyonmars.com/projects/paver/">http://www.blueskyonmars.com/projects/paver/</a></dt>
+<dd>Kevin Djangoor’s replacement for <code class="docutils literal"><span class="pre">make</span></code>; heavy use of decorators.</dd>
+<dt><a class="reference external" href="http://blog.doughellmann.com/2009/01/converting-from-make-to-paver.html">http://blog.doughellmann.com/2009/01/converting-from-make-to-paver.html</a></dt>
+<dd>Doug Hellman describes the experience of converting from make to paver.</dd>
+<dt><a class="reference external" href="http://www.informit.com/articles/article.aspx?p=1309289&amp;seqNum=4">http://www.informit.com/articles/article.aspx?p=1309289&amp;seqNum=4</a></dt>
+<dd>Class decorators</dd>
+</dl>
+</div></blockquote>
+</div>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="https://python-3-patterns-idioms-test.readthedocs.io/en/latest/Metaprogramming.html" class="btn btn-neutral float-right" title="Metaprogramming" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="https://python-3-patterns-idioms-test.readthedocs.io/en/latest/LanguageChanges.html" class="btn btn-neutral" title="Python 3 Language Changes" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr><div><div id="rtd-x7ewn73d" class="ethical-rtd"></div></div>
+
+  <div role="contentinfo">
+    <p>
+        © Copyright 2008, Creative Commons Attribution-Share Alike 3.0.
+      
+        <span class="commit">
+          Revision <code>59754c87cfb0</code>.
+        </span>
+      
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org/">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"> Read the Docs</span>
+      v: latest
+      <span class="fa fa-caret-down"></span>
+    </span>
+    <div class="rst-other-versions"><!-- Inserted RTD Footer -->
+
+<div class="injected">
+
+  
+
+      
+      
+      
+      <dl>
+        <dt>Версии</dt>
+        
+         <strong> 
+        <dd><a href="https://python-3-patterns-idioms-test.readthedocs.io/en/latest/PythonDecorators.html">latest</a></dd>
+         </strong> 
+        
+      </dl>
+      
+      
+
+      
+      
+      <dl>
+        <dt>Скачать</dt>
+        
+        <dd><a href="https://python-3-patterns-idioms-test.readthedocs.io/_/downloads/en/latest/pdf/">PDF</a></dd>
+        
+        <dd><a href="https://python-3-patterns-idioms-test.readthedocs.io/_/downloads/en/latest/htmlzip/">HTML</a></dd>
+        
+        <dd><a href="https://python-3-patterns-idioms-test.readthedocs.io/_/downloads/en/latest/epub/">Epub</a></dd>
+        
+      </dl>
+      
+      
+
+      
+      <dl>
+        
+        <!-- These are kept as relative links for internal installs that are http -->
+        <dt>On Read the Docs</dt>
+        <dd>
+          <a href="https://readthedocs.org/projects/python-3-patterns-idioms-test/">Project Home</a>
+        </dd>
+        <dd>
+          <a href="https://readthedocs.org/projects/python-3-patterns-idioms-test/builds/">Сборки</a>
+        </dd>
+        <dd>
+          <a href="https://readthedocs.org/projects/python-3-patterns-idioms-test/downloads/">Скачать</a>
+        </dd>
+      </dl>
+      
+
+      
+
+      
+      <dl>
+        <dt>On Bitbucket</dt>
+        <dd>
+          <a href="https://bitbucket.org/MatToufoutu/python-3-patterns-idioms/src/default/docs/PythonDecorators.rst">Редактировать</a>
+        </dd>
+      </dl>
+      
+      
+
+      
+      <dl>
+        <dt>Поиск</dt>
+        <dd>
+          <div style="padding: 6px;">
+            
+            <form id="flyout-search-form" class="wy-form" target="_blank" action="https://readthedocs.org/projects/python-3-patterns-idioms-test/search/" method="get">
+              <input type="text" name="q" placeholder="Search docs">
+              </form>
+          </div>
+        </dd>
+      </dl>
+      
+
+      
+      
+
+      <hr>
+      
+        <small>
+          <span>Hosted by <a href="https://readthedocs.org/">Read the Docs</a></span>
+          <span> · </span>
+          <a href="https://docs.readthedocs.io/page/privacy-policy.html">Политика приватности</a>
+        </small>
+      
+
+      
+
+</div>
+</div>
+  </div>
+
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'1.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="./Decorators — Python 3 Patterns, Recipes and Idioms_files/jquery-2.0.3.min.js"></script>
+      <script type="text/javascript" src="./Decorators — Python 3 Patterns, Recipes and Idioms_files/jquery-migrate-1.2.1.min.js"></script>
+      <script type="text/javascript" src="./Decorators — Python 3 Patterns, Recipes and Idioms_files/underscore.js"></script>
+      <script type="text/javascript" src="./Decorators — Python 3 Patterns, Recipes and Idioms_files/doctools.js"></script>
+      <script type="text/javascript" src="./Decorators — Python 3 Patterns, Recipes and Idioms_files/readthedocs-doc-embed.js"></script>
+
+  
+
+  
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+
+<div id="rtd-h493vlh7"></div><div at-magnifier-wrapper=""><div class="at-theme-light"><div class="at-base notranslate" translate="no"><div class="Z1-AJ" style="top: 0px; left: 0px;"></div></div></div></div></body></html>
