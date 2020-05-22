@@ -62,7 +62,6 @@ def find_parent(data: dict) -> str:
     """
 
 
-
     return data['A']
 
 
