@@ -1,17 +1,3 @@
-# import pymysql.cursors
-#
-# con = pymysql.connect(host='localhost',
-#                                   user='root',
-#                                   password='qazwsx2320',
-#                                   db='cars',
-#                                   charset='utf8mb4',
-#                                   cursorclass=pymysql.cursors.DictCursor)
-#
-# with con.cursor() as connection:
-#     connection.execute('Show tables')
-#     tab = connection.fetchone()
-#     print(tab)
-
 import json
 import sys
 
@@ -39,12 +25,3 @@ def recursif_search(data, res, finding_name, cur_name):
 
 for k, v in sorted(find_perent(input()).items()):
     print(f'{k} : {len(v) + 1}')
-
-
-
-
-
-
-
-
-
