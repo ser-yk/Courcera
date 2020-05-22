@@ -12,6 +12,10 @@
 #     tab = connection.fetchone()
 #     print(tab)
 
+import requests
+
+r = requests.get('http://numbersapi.com/31/math?json=true')
+print(r.status_code, r.content)
 
 
 
