@@ -1,6 +1,6 @@
 from django.conf.urls import url
 
-from template.views import echo, filters, extend
+from .views import echo, filters, extend
 
 urlpatterns = [
     url(r'^echo/$', echo),
