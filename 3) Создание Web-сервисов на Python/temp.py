@@ -11,8 +11,9 @@
 #     connection.execute('Show tables')
 #     tab = connection.fetchone()
 #     print(tab)
-
-print(int('a'))
+d = {'g': 1}
+# k, v = [*d.items()]
+print(*d.items())
 
 
 
