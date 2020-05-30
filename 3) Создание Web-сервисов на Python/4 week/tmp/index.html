@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>StackOverflow</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item">
+        <a class="nav-link" href="#">Log in</a>
+      <li class="nav-item">
+        <a class="nav-link" href="#" tabindex="-1" aria-disabled="true">Register</a>
+      </li>
+    </ul>
+    <form class="form-inline my-2 my-lg-0">
+      <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+    </form>
+  </div>
+</nav>
+
+ <div class="container">
+        <div class="row">
+            <div class="col-8">
+                <div class="row question">
+                    <div class="col-3 avatar">
+                        <div class="card" style="width: 100%;">
+                          <img src="x1712513-1876582197.png" class="card-img-top" alt="...">
+                          <div class="card-body">
+                                  <button class="avlike">like</button>
+                                    <span id="avlikes"></span>
+                                  <button class="avdislike">dislike</button>
+                          </div>
+                        </div>
+                    </div>
+                    <div class="col-9  field">
+                        <h3 align="center">У меня вопрос по курсу</h3>
+                        <p>Скажите пожалуйста, только мне одному кажетися, что требования к заданиям не всегда понятны?</p>
+                        <p>Вот так выглядит задание: "В задании представлен mockup, то есть идеального соответствия между макетом и результатом не должно быть, должны быть выполнены <b>критерии</b> проверки. Дизайн остается на волю слушателя."</p>
+                        <p>А критерии-то где? Картинка?</p>
+                    </div>
+                    <div id="tags">Tags:
+                    <a href="">Coursera</a>
+                    <a href="">Python</a>
+                    <a href="">Leaning</a>
+                    </div>
+                </div>
+                <hr id="line" />
+                <div class="message">
+                    <div class="row answers">
+                    <div class="col-3 avatar">
+                        <div class="card" style="width: 100%;">
+                          <img src="x404070-828004264.png" class="card-img-top" alt="...">
+                          <div class="card-body">
+
+                                  <button class="like">like</button>
+                                    <span id="likes">0</span>
+                                  <button class="dislike">dislike</button>
+                          </div>
+                        </div>
+                    </div>
+                    <div class="col-9  field">Привет. Тебе не кажется, так оно и есть. Сам часто сижу и не втыкаю, что от меня хотят.
+                    <p>Или например сделал задание и отправляешь его на проверку по десять раз, потому что есть скрытые условия,
+                        которые можно получить только из космоса.</p></div>
+                </div>
+                </div>
+                 <hr id="line" />
+                <form>
+                  <div class="form-group">
+                    <form id="rendered-form">
+                        <div class="rendered-form"><div class="formbuilder-textarea form-group field-answer">
+                        <label for="answer" class="formbuilder-textarea-label">Do you want to help<span class="tooltip-element" tooltip="Add your answer">?</span>
+                        </label>
+                            <textarea type="textarea" placeholder="Add your answer" class="form-control" name="answer" access="false" id="answer" title="Add your answer"></textarea>
+                        </div>
+                        </div>
+                    </form>
+                  </div>
+                  <button type="Answer" class="btn btn-primary">Answer</button>
+                </form>
+            </div>
+            <div class="col-4">
+                <div class="tags">
+                    <h3>Popular Tags</h3>
+                    <span class="badge badge-primary">Python</span>
+                    <span class="badge badge-secondary">Django</span>
+                    <span class="badge badge-success">С#</span>
+                    <span class="badge badge-danger">OOP</span>
+                    <span class="badge badge-warning">JSON</span>
+                    <span class="badge badge-info">Posgresql</span>
+                    <span class="badge badge-dark">iohttp</span>
+                </div>
+                <div class="members">
+                    <h3>Best Members</h3>
+                    <p><a href="#">Vladimir Putin</a></p>
+                    <p><a href="#">Covid-19</a></p>
+                    <p><a href="#">Eminem</a></p>
+                    <p><a href="#">Petr_I</a></p>
+                    <p><a href="#">Lev_Tolstoy</a></p>
+                    <p><a href="#">Donald Trump</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+ <div class="bottom alert alert-success"></div>
+
+<script type='text/javascript'>
+                                    window.onload = function () {
+                                    span = document.getElementById('likes');
+                                    var count = 0;
+                                    avspan = document.getElementById('avlikes');
+                                    var avcount = 0;
+                                    span.innerHTML = count;
+                                    avspan.innerHTML = count;
+                                    document.body.onclick = function (e) {
+                                        e = e || event;
+                                        var target = e.target || e.srcElement;
+                                        if (target.className == 'like') {
+                                            count++;
+                                    span.innerHTML = count;
+                                    }
+                                      if (target.className == 'dislike') {
+                                            count--;
+                                        span.innerHTML = count;
+                                      }
+                                      if (target.className == 'avlike') {
+                                            avcount++;
+                                        avspan.innerHTML = avcount;
+                                      }
+                                      if (target.className == 'avdislike') {
+                                            avcount--;
+                                        avspan.innerHTML = avcount;
+                                      }
+                                    }
+
+                                }
+                                </script>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
+</body>
+</html>
