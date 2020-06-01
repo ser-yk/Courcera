@@ -1,21 +1,12 @@
-# import pymysql.cursors
-#
-# con = pymysql.connect(host='localhost',
-#                                   user='root',
-#                                   password='qazwsx2320',
-#                                   db='cars',
-#                                   charset='utf8mb4',
-#                                   cursorclass=pymysql.cursors.DictCursor)
-#
-# with con.cursor() as connection:
-#     connection.execute('Show tables')
-#     tab = connection.fetchone()
-#     print(tab)
-d = {'g': 1}
-# k, v = [*d.items()]
-print(*d.items())
+import json
 
-
-
-
-
+data = {
+    "id": 2,
+    "title": 'item.title',
+    "description": 'item.description',
+    "price": 'item.price',
+    "reviews": {"id": 'review', "text": 'review', "grade": 'grade'}
+}
+a = json.dumps(data)
+print(json.dumps(data))
+print(type(data['id']))
