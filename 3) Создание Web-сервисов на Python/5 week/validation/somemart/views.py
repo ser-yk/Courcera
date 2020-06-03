@@ -6,6 +6,8 @@ from jsonschema.exceptions import ValidationError
 from .models import Item, Review
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
+import base64
+from django.contrib.auth import authenticate
 
 
 @method_decorator(csrf_exempt, name='dispatch')
@@ -13,15 +15,30 @@ class AddItemView(View):
     """View для создания товара."""
 
     def post(self, request):
-        try:
-            document = json.loads(request.body)
-            validate(document, REVIEW_SCHEMA_ITEM)
-            item = Item.objects.create(title=document['title'],
-                                       description=document['description'],
-                                       price=document['price'])
-            return JsonResponse(data={'id': item.pk}, status=201, safe=True)
-        except (json.JSONDecodeError, ValidationError) as err:
-            return JsonResponse(data={}, status=400, safe=False)
+        if 'HTTP_AUTHORIZATION' in request.META:
+            auth = request.META['HTTP_AUTHORIZATION'].split()
+            if len(auth) == 2:
+                if auth[0].lower() == "basic":
+                    token = base64.b64decode(auth[1].encode('ascii'))
+                    username, password = token.decode('utf-8').split(':')
+                    user = authenticate(username=username, password=password)
+                    if user is not None and user.is_active:
+                        if user.is_staff:
+                            try:
+                                document = json.loads(request.body)
+                                validate(document, REVIEW_SCHEMA_ITEM)
+                                item = Item.objects.create(title=document['title'],
+                                                           description=document['description'],
+                                                           price=document['price'])
+                                return JsonResponse(data={'id': item.pk}, status=201, safe=True)
+                            except (json.JSONDecodeError, ValidationError):
+                                return JsonResponse(data={}, status=400, safe=False)
+                        else:
+                            return HttpResponse(status=403)
+
+        return HttpResponse(status=401)
+
+
 
 
 @method_decorator(csrf_exempt, name='dispatch')
@@ -39,10 +56,10 @@ class PostReviewView(View):
             except Item.DoesNotExist:
                 return JsonResponse(data={}, status=404, safe=False)
         except (json.JSONDecodeError, ValidationError):
-            return JsonResponse(data={}, status=400, safe=False)
+            return JsonResponse(data={'Error': 'exp'}, status=400, safe=False)
 
 
-
+@method_decorator(csrf_exempt, name='dispatch')
 class GetItemView(View):
     """View для получения информации о товаре.
 

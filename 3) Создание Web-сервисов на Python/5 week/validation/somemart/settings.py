@@ -76,8 +76,13 @@ WSGI_APPLICATION = 'somemart.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'django_validation',
+        'USER': 'root',
+        'PASSWORD': 'qazwsx2320',
+        'HOST': '127.0.0.1',
+        'PORT': 3306,
+        'OPTINS': {'charset': 'utf8mb4'}
     }
 }
 
@@ -100,6 +105,9 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+AUTHENTICATION_BACKENDS = (
+        'django.contrib.auth.backends.ModelBackend',  # default
+    )
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.0/topics/i18n/
@@ -119,3 +127,5 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# LOGIN_URL = '/login/'

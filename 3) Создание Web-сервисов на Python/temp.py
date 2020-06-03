@@ -1,12 +1,35 @@
-import json
+# views.py
+import base64
+from django.contrib.auth import authenticate
+from django.core.exceptions import ObjectDoesNotExist
+from django.http import HttpResponse, JsonResponse
+from django.shortcuts import render_to_response
 
-data = {
-    "id": 2,
-    "title": 'item.title',
-    "description": 'item.description',
-    "price": 'item.price',
-    "reviews": {"id": 'review', "text": 'review', "grade": 'grade'}
-}
-a = json.dumps(data)
-print(json.dumps(data))
-print(type(data['id']))
+
+
+
+def page_view(request, slug, **kwargs):
+    try:
+        page = Page.objects.get(page_slug=slug)
+    except ObjectDoesNotExist:
+        return render_to_response('pages/404.html')
+
+    # If private page do basic auth
+    if page.is_private:
+        if 'HTTP_AUTHORIZATION' in request.META:
+            auth = request.META['HTTP_AUTHORIZATION'].split()
+            if len(auth) == 2:
+                if auth[0].lower() == "basic":
+                    uname, passwd = base64.b64decode(auth[1]).split(':')
+                    user = authenticate(username=uname, password=passwd)
+                    if user is not None and user.is_active:
+                        request.user = user
+
+                        return render_to_response('pages/page.html', {"page": page})
+
+        response = HttpResponse()
+        response.status_code = 401
+        response['WWW-Authenticate'] = 'Basic realm="%s"' % "Basci Auth Protected"
+        return response
+    else:
+        return render_to_response('pages/page.html', {"page": page})
