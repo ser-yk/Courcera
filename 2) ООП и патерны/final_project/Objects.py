@@ -141,20 +141,58 @@ class Effect(Hero):
 # __________________________________________
 class Enemy(Interactive, Creature):
     def __init__(self, icon, stats, xp, position):
-        pass
+        super().__init__(icon, stats, position)
+        self.exp = xp
+
+    def draw(self, surface):
+        surface.blit(self.sprite, self.position)
 
     def interact(self, engine, hero):
-        pass
+
+        f_str = hero.stats["strength"] - random.randint(1, engine.level) * self.stats["strength"]
+        f_endr = hero.stats["endurance"] - random.randint(1, engine.level) * self.stats["endurance"]
+        f_luck = hero.stats["luck"] - random.randint(1, engine.level) * self.stats["luck"]
+
+        summary = f_str + f_endr + f_luck
+
+        if summary >= 0:
+            engine.hero.exp += self.exp
+            engine.score += 0.02 * summary
+
+        elif summary < 0:
+            engine.hero.exp += int(0.1 * self.exp)
+            engine.hero.hp += int(0.2 * summary)
+
+            if engine.hero.hp <= 0:
+                engine.score += 0.1 * engine.hero.hp
+                engine.hero.hp = 1
+
+            elif engine.hero.hp > 0:
+                engine.score -= 0.02 * summary
+
+        engine.hero.level_up()
+
 
 class Berserk(Effect):
+    def __init__(self, base):
+        super().__init__(base)
+
     def apply_effect(self):
-        pass
+        self.stats["luck"] *= 2
 
 
 class Blessing(Effect):
+    def __init__(self, base):
+        super().__init__(base)
+
     def apply_effect(self):
-        pass
+        self.stats["luck"] *= 2
+
 
 class Weakness(Effect):
+    def __init__(self, base):
+        super().__init__(base)
+
     def apply_effect(self):
-        pass
+        self.stats["strength"] = 1
+        self.stats["luck"] = 1

@@ -2,7 +2,7 @@ import pygame
 import random
 import yaml
 import os
-from . import Objects
+from final_project import Objects
 
 OBJECT_TEXTURE = os.path.join("texture", "objects")
 ENEMY_TEXTURE = os.path.join("texture", "enemies")
@@ -76,7 +76,6 @@ class MapFactory(yaml.YAMLObject):
 
     @classmethod
     def from_yaml(cls, loader, node):
-
         # FIXME
         # get _map and _obj
         _map = cls.Map()
@@ -116,6 +115,7 @@ class EndMap(MapFactory):
     class Objects:
         def __init__(self):
             self.objects = []
+            self.config = {}
 
         def get_objects(self, _map):
             return self.objects
@@ -143,6 +143,7 @@ class RandomMap(MapFactory):
 
         def __init__(self):
             self.objects = []
+            self.config = {}
 
         def get_objects(self, _map):
 
@@ -234,6 +235,7 @@ class EmptyMap(MapFactory):
     class Objects:
         def __init__(self):
             self.objects = []
+            self.config = {}
 
         def get_objects(self, _map):
 
@@ -281,6 +283,7 @@ class SpecialMap(MapFactory):
     class Objects:
         def __init__(self):
             self.objects = []
+            self.config = {}
 
         def get_objects(self, _map):
 
