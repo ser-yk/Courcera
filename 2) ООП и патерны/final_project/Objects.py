@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 import pygame
 import random
+import Service
 
 
 def create_sprite(img, sprite_size):
@@ -18,18 +19,12 @@ class Interactive(ABC):
         pass
 
 
-
-# FIXME _______________________________________________________________
-# add classes
 class AbstractObject(ABC):
-    def __init__(self):
-        pass
 
+    @abstractmethod
     def draw(self, display):
         pass
 
-
-# __________________________________________________________________________
 
 class Ally(AbstractObject, Interactive):
 
@@ -40,6 +35,9 @@ class Ally(AbstractObject, Interactive):
 
     def interact(self, engine, hero):
         self.action(engine, hero)
+
+    def draw(self, display):
+        display.draw_object(self.sprite, self.position)
 
 
 class Creature(AbstractObject):
@@ -53,6 +51,9 @@ class Creature(AbstractObject):
 
     def calc_max_HP(self):
         self.max_hp = 5 + self.stats["endurance"] * 2
+
+    def draw(self, display):
+        display.draw_object(self.sprite, self.position)
 
 
 class Hero(Creature):
@@ -72,6 +73,31 @@ class Hero(Creature):
             self.stats["endurance"] += 2
             self.calc_max_HP()
             self.hp = self.max_hp
+
+
+class Enemy(Creature, Interactive):
+
+    def __init__(self, icon, stats, xp, position):
+        self.sprite = icon
+        self.stats = stats
+        self.position = position
+        self.calc_max_HP()
+        self.hp = self.max_hp
+        self.exp = xp
+        self.action = Service.add_gold
+
+    def interact(self, engine, hero):
+        hit = bool(random.getrandbits(1))
+        if hit:
+            hero.hp -= self.stats['strength']
+        if hero.hp <= 0:
+            engine.notify("GAME OVER")
+            engine.game_process = False
+        else:
+            hero.exp += self.exp
+            for m in hero.level_up():
+                engine.notify(m)
+            self.action(engine, hero)
 
 
 class Effect(Hero):
@@ -138,61 +164,27 @@ class Effect(Hero):
         pass
 
 
-# __________________________________________
-class Enemy(Interactive, Creature):
-    def __init__(self, icon, stats, xp, position):
-        super().__init__(icon, stats, position)
-        self.exp = xp
-
-    def draw(self, surface):
-        surface.blit(self.sprite, self.position)
-
-    def interact(self, engine, hero):
-
-        f_str = hero.stats["strength"] - random.randint(1, engine.level) * self.stats["strength"]
-        f_endr = hero.stats["endurance"] - random.randint(1, engine.level) * self.stats["endurance"]
-        f_luck = hero.stats["luck"] - random.randint(1, engine.level) * self.stats["luck"]
-
-        summary = f_str + f_endr + f_luck
-
-        if summary >= 0:
-            engine.hero.exp += self.exp
-            engine.score += 0.02 * summary
-
-        elif summary < 0:
-            engine.hero.exp += int(0.1 * self.exp)
-            engine.hero.hp += int(0.2 * summary)
-
-            if engine.hero.hp <= 0:
-                engine.score += 0.1 * engine.hero.hp
-                engine.hero.hp = 1
-
-            elif engine.hero.hp > 0:
-                engine.score -= 0.02 * summary
-
-        engine.hero.level_up()
-
-
 class Berserk(Effect):
-    def __init__(self, base):
-        super().__init__(base)
 
     def apply_effect(self):
-        self.stats["luck"] *= 2
+        self.hp = self.base.hp + 50
+        self.stats["strength"] += 7
+        self.stats["endurance"] += 7
+        self.stats["intelligence"] -= 3
+        self.stats["luck"] += 7
 
 
 class Blessing(Effect):
-    def __init__(self, base):
-        super().__init__(base)
 
     def apply_effect(self):
-        self.stats["luck"] *= 2
+        self.stats["strength"] += 2
+        self.stats["endurance"] += 2
+        self.stats["intelligence"] += 2
+        self.stats["luck"] += 2
 
 
 class Weakness(Effect):
-    def __init__(self, base):
-        super().__init__(base)
 
     def apply_effect(self):
-        self.stats["strength"] = 1
-        self.stats["luck"] = 1
+        self.stats["strength"] -= 4
+        self.stats["endurance"] -= 4

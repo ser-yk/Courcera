@@ -1,4 +1,4 @@
-from . import Service
+import Service
 
 
 class GameEngine:
